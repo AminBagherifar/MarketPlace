@@ -1,0 +1,241 @@
+﻿@using MarketPlace.DataLayer.Entities.Site
+@using MarketPlace.DataLayer.Entities.Account
+@using MarketPlace.Application.EntitiesExtensions
+@using MarketPlace.DataLayer.Entities.Products
+@{
+    var siteSetting = ViewBag.siteSetting as SiteSetting;
+    var user = ViewBag.user as User;
+    var categories = ViewBag.ProductCategories as List<ProductCategory>;
+}
+
+<!--header area start-->
+<!--Offcanvas menu area start-->
+<div class="off_canvars_overlay">
+
+</div>
+<div class="Offcanvas_menu">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="canvas_open">
+                    <a href="javascript:void(0)"><i class="ion-navicon"></i></a>
+                </div>
+                <div class="Offcanvas_menu_wrapper">
+                    <div class="canvas_close">
+                        <a href="javascript:void(0)"><i class="ion-android-close"></i></a>
+                    </div>
+                    <div class="support_info">
+                        <p>تلفن تماس: <a class="ltr-text" href="tel:+989123456789">@siteSetting.Mobile</a></p>
+                    </div>
+                    <div class="top_right text-right">
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <ul>
+                                <li><a asp-controller="Account" asp-action="Register"> ثبت نام </a></li>
+                                <li><a asp-controller="Account" asp-action="Login"> ورود </a></li>
+                            </ul>
+                        }
+                        else
+                        {
+                            <ul>
+                                <li><a asp-area="User" asp-controller="Home" asp-action="Dashboard"> @user.GetUserShowName()، خوش آمدید </a></li>
+                                <li><a asp-controller="Account" asp-action="LogOut"> خروج </a></li>
+                            </ul>
+                        }
+                    </div>
+
+                    @await Component.InvokeAsync("UserOrder")
+
+                    <div id="menu" class="text-left ">
+                        <ul class="offcanvas_main_menu">
+                            <li class="menu-item-has-children active">
+                                <a href="#">خانه</a>
+                            </li>
+                            <li>
+                                <a asp-area="" asp-controller="Product" asp-action="FilterProducts">فروشگاه</a>
+                            </li>
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                    <li class="menu-item-has-children"><a asp-controller="Account" asp-action="Register"> ثبت نام </a></li>
+                                    <li class="menu-item-has-children"><a asp-controller="Account" asp-action="Login"> ورود </a></li>
+                            }
+                            else
+                            { 
+                                    <li class="menu-item-has-children"><a asp-area="User" asp-controller="Home" asp-action="Dashboard"> @user.GetUserShowName()، خوش آمدید </a></li>
+                                    <li class="menu-item-has-children"><a asp-controller="Account" asp-action="LogOut"> خروج </a></li>
+                            }
+                            <li class="menu-item-has-children">
+                                <a asp-controller="Home" asp-action="AboutUs">درباره ما</a>
+                            </li>
+                            <li class="menu-item-has-children">
+                                <a asp-controller="Home" asp-action="ContactUs"> تماس با ما</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Offcanvas menu area end-->
+
+<header>
+    <div class="main_header">
+        <!--header top start-->
+        <div class="header_top">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="support_info">
+                            <p>تلفن تماس: <a class="ltr-text" href="tel:+989123456789">@siteSetting.Mobile</a></p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="top_right text-right">
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <ul>
+                                    <li><a asp-controller="Account" asp-action="Register"> ثبت نام </a></li>
+                                    <li><a asp-controller="Account" asp-action="Login"> ورود </a></li>
+                                </ul>
+                            }
+                            else
+                            {
+                                <ul>
+                                    <li><a asp-area="User" asp-controller="Home" asp-action="Dashboard"> @user.GetUserShowName()، خوش آمدید </a></li>
+                                    <li><a asp-controller="Account" asp-action="LogOut"> خروج </a></li>
+                                </ul>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--header top start-->
+        <!--header middel start-->
+        <div class="header_middle">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="logo">
+                            <a href="/"><img src="/img/logo/logo.png" alt=""></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-6">
+                        <div class="middel_right">
+                            @await Component.InvokeAsync("UserOrder")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--header middel end-->
+        <!--header bottom satrt-->
+        <div class="main_menu_area">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-3 col-md-12">
+                        <div class="categories_menu">
+                            <div class="categories_title">
+                                <h2 class="categori_toggle">دسته ‌بندی ها</h2>
+                            </div>
+                            <div class="categories_menu_toggle">
+                                <ul>
+                                    @if (categories != null && categories.Any())
+                                    {
+                                        @foreach (var category in categories.Where(s => s.ParentId == null))
+                                        {
+                                            if (categories.Any(s => s.ParentId == category.Id))
+                                            {
+                                                <li class="menu_item_children">
+                                                    <a href="#">@category.Title <i class="fa fa-angle-left"></i></a>
+                                                    <ul class="categories_mega_menu">
+                                                        @foreach (var subCategory in categories.Where(s => s.ParentId == category.Id))
+                                                        {
+                                                            <li class="menu_item_children">
+                                                                <a href="#">@subCategory.Title</a>
+                                                                @if (categories.Any(s => s.ParentId == subCategory.Id))
+                                                                {
+                                                                    <ul class="categorie_sub_menu">
+                                                                        @foreach (var secondSubCategory in categories.Where(s => s.ParentId == subCategory.Id))
+                                                                        {
+                                                                            <li><a href="">@secondSubCategory.Title</a></li>
+                                                                        }
+                                                                    </ul>
+                                                                }
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </li>
+                                            }
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-12">
+                        <div class="main_menu menu_position">
+                            <nav>
+                                <ul>
+                                    <li>
+                                        <a class="active" href="/">خانه<i class="fa fa-angle-down"></i></a>
+                                    </li>
+                                    <li class="mega_items">
+                                        <a asp-area="" asp-controller="Product" asp-action="FilterProducts">محصولات</a>
+
+                                    </li>
+                                    <li>
+                                        <a href="#">صفحات <i class="fa fa-angle-down"></i></a>
+                                        <ul class="sub_menu pages">
+                                            <li><a asp-area="" asp-controller="Product" asp-action="FilterProducts">محصولات</a></li>
+                                            <li><a asp-controller="Home" asp-action="AboutUs">درباره ما</a></li>
+                                            <li><a asp-controller="Home" asp-action="ContactUs"> تماس با ما</a></li>
+                                        </ul>
+                                    </li>
+
+                                    <li><a asp-controller="Home" asp-action="AboutUs">درباره ما</a></li>
+                                    <li><a asp-controller="Home" asp-action="ContactUs"> تماس با ما</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--header bottom end-->
+    </div>
+</header>
+<!--header area end-->
+<!--sticky header area start-->
+<div class="sticky_header_area sticky-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-3">
+                <div class="logo">
+                    <a href="/"><img src="/img/logo/logo.png" alt=""></a>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="sticky_header_right menu_position">
+                    <div class="main_menu">
+                        <nav>
+                            <ul>
+                                <li>
+                                    <a class="active" href="/">خانه</a>
+                                </li>
+                                <li class="mega_items">
+                                    <a asp-area="" asp-controller="Product" asp-action="FilterProducts">فروشگاه</a>
+                                </li>
+                                <li><a asp-controller="Home" asp-action="AboutUs">درباره ما</a></li>
+                                <li><a asp-controller="Home" asp-action="ContactUs"> تماس با ما</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    @await Component.InvokeAsync("UserOrder")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--sticky header area end-->

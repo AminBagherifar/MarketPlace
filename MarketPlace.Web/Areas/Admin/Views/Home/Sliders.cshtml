@@ -1,0 +1,71 @@
+﻿@using MarketPlace.Application.Utils
+@model List<MarketPlace.DataLayer.Entities.Site.Slider>
+@{
+    ViewData["Title"] = "اسلایدر ها";
+}
+
+<div class="col-xs-8">
+    <div class="well with-header with-footer">
+        <div class="header bordered-sky">
+            @ViewData["Title"]
+        </div>
+        <a class="btn btn-success mb-1" asp-area="Admin" asp-controller="Home" asp-action="CreateSlider">افزودن اسلایدر</a>
+        @if (Model != null && Model.Any())
+        {
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            تصویر اسلایدر
+                        </th>
+                        <th>
+                            عنوان اصلی
+                        </th>
+                        <th>
+                            زیر عنوان
+                        </th>
+                        <th>
+                            لینک
+                        </th>
+                        <th>
+                            دستورات
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var slider in Model)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@(PathExtension.SliderThumb + slider.ImageName)" width="100" />
+                            </td>
+                            <td>
+                                @slider.MainHeader
+                            </td>
+                            <td>
+                                @slider.SecondHeader
+                            </td>
+                            <td>
+                                @slider.Link
+                            </td>
+                            <td>
+                                <a class="btn btn-warning" asp-area="Admin" asp-controller="Home" asp-action="EditSlider" asp-route-sliderId="@slider.Id">ویرایش اطلاعات</a>
+                                <a class="btn btn-danger" asp-area="Admin" asp-controller="Home" asp-action="DeleteSlider" asp-route-sliderId="@slider.Id">حذف</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                <p>
+                    هیچ اطلاعاتی یافت نشد
+                </p>
+            </div>
+        }
+    </div>
+</div>
+
+

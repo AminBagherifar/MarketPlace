@@ -1,0 +1,41 @@
+﻿@model MarketPlace.DataLayer.Entities.Site.SiteBanner
+@{
+    ViewData["Title"] = "ویرایش بنر";
+}
+
+
+@section scripts
+{
+    <partial name="_JqueryValidators" />
+}
+<div class="col-xs-6">
+    <div class="well with-header">
+        <div class="header bordered-sky">
+            افزودن بنر
+        </div>
+        <form asp-area="Admin" asp-controller="Home" asp-action="EditBanner" method="post" id="filter-form" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImageName" />
+            <div class="form-group">
+                <label>Url</label>
+                <input class="form-control" asp-for="Url">
+            </div>
+            <div class="form-group">
+                <label>سایز باکس )مثال : col-md-10 )</label>
+                <input class="form-control" asp-for="ColSize">
+            </div>
+            <div class="form-group">
+                <label>محل قرارگیری بنر</label>
+                <select asp-for="BannerPlacement">
+                    <option value="0">قسمت بالای سایت</option>
+                    <option value="1">قسمت وسط سایت</option>
+                    <option value="2">قسمت پایین سایت</option>
+                </select>
+            </div>
+            <div class="col-md-9">
+                <input type="file" name="bannerImage" accept=".png,.jpeg" />
+            </div>
+            <button type="submit" class="btn btn-success btn-block">ثبت</button>
+        </form>
+    </div>
+</div>

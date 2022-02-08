@@ -1,0 +1,64 @@
+﻿@using MarketPlace.Application.Utils
+@model List<MarketPlace.DataLayer.Entities.Site.SiteBanner>
+@{
+    ViewData["Title"] = "بنر ها";
+}
+
+<div class="col-xs-8">
+    <div class="well with-header with-footer">
+        <div class="header bordered-sky">
+            @ViewData["Title"]
+        </div>
+        <a class="btn btn-success mb-1" asp-area="Admin" asp-controller="Home" asp-action="CreateBanner">افزودن بنر</a>
+        @if (Model != null && Model.Any())
+        {
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            تصویر بنر
+                        </th>
+                        <th>
+                            سایز
+                        </th>
+                        <th>
+                            Url
+                        </th>
+                        <th>
+                            دستورات
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var banner in Model)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@(PathExtension.BannerThumb + banner.ImageName)" width="100" />
+                            </td>
+                            <td>
+                                @banner.ColSize
+                            </td>
+                            <td>
+                                @banner.Url
+                            </td>
+                            <td>
+                                <a class="btn btn-warning" asp-area="Admin" asp-controller="Home" asp-action="EditBanner" asp-route-bannerId="@banner.Id">ویرایش اطلاعات</a>
+                                <a class="btn btn-danger" asp-area="Admin" asp-controller="Home" asp-action="DeleteBanner" asp-route-bannerId="@banner.Id">حذف</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                <p>
+                    هیچ اطلاعاتی یافت نشد
+                </p>
+            </div>
+        }
+    </div>
+</div>
+

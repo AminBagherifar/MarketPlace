@@ -1,0 +1,42 @@
+﻿@model MarketPlace.DataLayer.Entities.Site.Slider
+@{
+    ViewData["Title"] = "EditSlider";
+}
+
+
+@section scripts
+{
+    <partial name="_JqueryValidators" />
+}
+<div class="col-xs-6">
+    <div class="well with-header">
+        <div class="header bordered-sky">
+            ویرایش سلایدر
+        </div>
+        <form asp-area="Admin" asp-controller="Home" asp-action="EditSlider" method="post" id="filter-form" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImageName" />
+            <div class="form-group">
+                <label>عنوان اصلی</label>
+                <input class="form-control" asp-for="MainHeader">
+            </div>
+            <div class="form-group">
+                <label>زیر عنوان</label>
+                <input class="form-control" asp-for="SecondHeader">
+            </div>
+            <div class="form-group">
+                <label>توضیحات محصول</label>
+                <textarea asp-for="Description" ckeditor="1"></textarea>
+                <span class="text-danger" asp-validation-for="Description"></span>
+            </div>
+            <div class="form-group">
+                <label>لینک</label>
+                <input class="form-control" asp-for="Link">
+            </div>
+            <div class="col-md-9">
+                <input type="file" name="sliderImage" accept=".png,.jpeg" />
+            </div>
+            <button type="submit" class="btn btn-success btn-block">ثبت</button>
+        </form>
+    </div>
+</div>

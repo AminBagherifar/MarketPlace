@@ -1,0 +1,260 @@
+﻿@using MarketPlace.Application.EntitiesExtensions
+@using MarketPlace.Application.Utils
+@using MarketPlace.DataLayer.Entities.Products
+@using MarketPlace.DataLayer.Entities.Site
+@using MarketPlace.DataLayer.DTOs.Orders
+@{
+    ViewData["Title"] = "صفحه ی اصلی";
+    var banners = ViewBag.banners as List<SiteBanner>;
+    var offProducts = ViewData["OffProducts"] as List<ProductDiscount>;
+    var products = ViewData["Products"] as List<Product>;
+    var popularProducts = ViewData["PopularProducts"] as List<Product>;
+}
+
+
+@await Component.InvokeAsync("HomeSlider")
+<!--shipping area start-->
+<section class="shipping_area mb-70">
+    <div class="container">
+        <div class=" row">
+            <div class="col-lg-3 col-md-6">
+                <div class="single_shipping">
+                    <div class="shipping_icone">
+                        <img src="/img/about/shipping1.png" alt="">
+                    </div>
+                    <div class="shipping_content">
+                        <h2>ارسال رایگان</h2>
+                        <p>ارسال رایگان به تمام نقاط کشور</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="single_shipping">
+                    <div class="shipping_icone">
+                        <img src="/img/about/shipping2.png" alt="">
+                    </div>
+                    <div class="shipping_content">
+                        <h2>پشتیبانی 24 ساعته</h2>
+                        <p>هر ساعت از شبانه روز تماس بگیرید</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="single_shipping">
+                    <div class="shipping_icone">
+                        <img src="/img/about/shipping3.png" alt="">
+                    </div>
+                    <div class="shipping_content">
+                        <h2>100% بازگشت وجه</h2>
+                        <p>30 روز مهلت بازگشت وجه</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="single_shipping">
+                    <div class="shipping_icone">
+                        <img src="/img/about/shipping4.png" alt="">
+                    </div>
+                    <div class="shipping_content">
+                        <h2>پرداخت ایمن</h2>
+                        <p>امنیت پرداخت تضمین شده</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--shipping area end-->
+@if (banners != null && banners.Any(s => s.BannerPlacement == BannerPlacement.Home_1))
+{
+    <!--banner area start-->
+    <div class="banner_area mb-40">
+        <div class="container">
+            <div class="row">
+
+                @foreach (var banner in banners.Where(s => s.BannerPlacement == BannerPlacement.Home_1))
+                {
+                    <div class="@banner.ColSize">
+                        <div class="single_banner mb-30">
+                            <div class="banner_thumb">
+                                <a href="@banner.Url">
+                                    <img src="@banner.GetBannerMainImageAddress()" style="width: 100%">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!--banner area end-->
+}
+@if (offProducts != null && offProducts.Any())
+{
+    <!--product area start-->
+    <section class="product_area mb-46">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section_title">
+                        <h2>پیشنهاد های ویژه</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="product_carousel product_column5 owl-carousel">
+                @foreach (var discount in offProducts)
+                {
+                    <article class="single_product">
+
+                        <figure>
+                            <div class="product_thumb">
+                                <a class="primary_img" asp-controller="Product" asp-action="ProductDetail" asp-route-productId="@discount.ProductId" asp-route-title="@discount.Product.Title.FixTextForUrl()">
+                                    <img src="@(PathExtension.ProductImage + discount.Product.ImageName)" alt="">
+                                </a>
+                                <a class="secondary_img" asp-controller="Product" asp-action="ProductDetail" asp-route-productId="@discount.ProductId" asp-route-title="@discount.Product.Title.FixTextForUrl()">
+                                    <img src="@(PathExtension.ProductImage + discount.Product.ImageName)" alt="">
+                                </a>
+                                <div class="label_product">
+                                    <span class="label_sale">فروش</span>
+                                </div>
+                                <div class="product_timing">
+                                    <div data-countdown="@discount.ExpireDate.ToString("yyyy/MM/dd")"></div>
+                                </div>
+                            </div>
+                            <figcaption class="product_content">
+                                <div class="price_box">
+                                    <span class="old_price">@discount.Product.Price.ToString("#,0") تومان</span>
+                                    <span class="current_price">@((discount.Product.Price * (100 - discount.Percentage) / 100).ToString("#,0")) تومان</span>
+                                </div>
+                                <h3 class="product_name"><a href="product-countdown.html">@discount.Product.Title</a></h3>
+                            </figcaption>
+                        </figure>
+                    </article>
+                }
+            </div>
+        </div>
+    </section>
+    <!--product area end-->
+}
+<!--banner area start-->
+<div class="banner_area mb-40">
+    <div class="container">
+        <div class="row">
+            @foreach (var banner in banners.Where(s => s.BannerPlacement == BannerPlacement.Home_2))
+            {
+                <div class="@banner.ColSize">
+                    <div class="single_banner mb-30">
+                        <div class="banner_thumb">
+                            <a href="@banner.Url">
+                                <img src="@banner.GetBannerMainImageAddress()" style="width: 100%">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!--banner area end-->
+<!--featured product area start-->
+@if (products != null && products.Any())
+{
+    <section class="featured_product_area mb-70">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section_title">
+                        <h2>محصولات جدید</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row featured_container featured_column3">
+                @foreach (var item in products)
+                {
+                    <div class="col-lg-4">
+                        <article class="single_product">
+                            <figure>
+                                <div class="product_thumb">
+                                    <a class="primary_img" asp-controller="Product" asp-action="ProductDetail" asp-route-productId="@item.Id" asp-route-title="@item.Title.FixTextForUrl()">
+                                        <img src="@(PathExtension.ProductImage + item.ImageName)" alt="">
+                                    </a>
+                                    <a class="secondary_img" asp-controller="Product" asp-action="ProductDetail" asp-route-productId="@item.Id" asp-route-title="@item.Title.FixTextForUrl()">
+                                        <img src="@(PathExtension.ProductImage + item.ImageName)" alt="">
+                                    </a>
+                                </div>
+                                <figcaption class="product_content">
+                                    <div class="price_box">
+                                        <span class="current_price">@item.Price.ToString("#,0") تومان</span>
+                                    </div>
+                                    <h3 class="product_name"><a asp-controller="Product" asp-action="ProductDetail" asp-route-productId="@item.Id" asp-route-title="@item.Title.FixTextForUrl()">@item.Title</a></h3>
+                                </figcaption>
+                            </figure>
+                        </article>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+<!--featured product area end-->
+@await Component.InvokeAsync("ProductSlider", new { categoryName = "mobile" })
+<!--banner area start-->
+<div class="banner_area mb-40">
+    <div class="container">
+        <div class="row">
+            @foreach (var banner in banners.Where(s => s.BannerPlacement == BannerPlacement.Home_3))
+            {
+                <div class="@banner.ColSize">
+                    <div class="single_banner mb-30">
+                        <div class="banner_thumb">
+                            <a href="@banner.Url">
+                                <img src="@banner.GetBannerMainImageAddress()" style="width: 100%">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!--banner area end-->
+<!--product area start-->
+@if (popularProducts != null && popularProducts.Any())
+{
+    <section class="product_area mb-46">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="product_left_area">
+                        <div class="section_title">
+                            <h2>پرفروشترین ها</h2>
+                        </div>
+                        <div class="product_carousel product_column4 owl-carousel">
+                            @foreach (var item in popularProducts)
+                            {
+                                <article class="single_product">
+                                    <figure>
+                                        <div class="product_thumb">
+                                            <a class="primary_img" asp-controller="Product" asp-action="ProductDetail" asp-route-productId="@item.Id" asp-route-title="@item.Title.FixTextForUrl()"><img src="@(PathExtension.ProductImage + item.ImageName)" alt=""></a>
+                                            <a class="secondary_img" asp-controller="Product" asp-action="ProductDetail" asp-route-productId="@item.Id" asp-route-title="@item.Title.FixTextForUrl()"><img src="@(PathExtension.ProductImage + item.ImageName)" alt=""></a>
+                                            <div class="label_product">
+                                                <span class="label_sale">فروش</span>
+                                            </div>
+                                        </div>
+                                        <figcaption class="product_content">
+                                            <div class="price_box">
+                                                <span class="current_price">@item.Price.ToString("#,0") تومان</span>
+                                            </div>
+                                            <h3 class="product_name"><a asp-controller="Product" asp-action="ProductDetail" asp-route-productId="@item.Id" asp-route-title="@item.Title.FixTextForUrl()">@item.Title</a></h3>
+                                        </figcaption>
+                                    </figure>
+                                </article>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+<!--product area end-->
